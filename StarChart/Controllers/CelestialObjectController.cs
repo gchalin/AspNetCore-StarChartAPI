@@ -22,8 +22,6 @@ namespace StarChart.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-            //This method should return NotFound if there is no CelestialObject with
-            //an Id property that matches the parameter.
             var CelestialObject = _context.CelestialObjects.FirstOrDefault(c => c.Id == id);
 
             if (CelestialObject == null) return NotFound();
