@@ -17,6 +17,7 @@ namespace StarChart.Controllers
         public CelestialObjectController(ApplicationDbContext context)
         {
             _context = context;
+
         }
 
         [HttpGet("{id:int}")]
@@ -42,21 +43,24 @@ namespace StarChart.Controllers
         [HttpGet("{name}")]
         public IActionResult GetByName(string name)
         {
-            //This method should return NotFound if there is no CelestialObject with
-            //an Id property that matches the parameter.
-            var CelestialObject = _context.CelestialObjects.FirstOrDefault(c => c.Name == name);
+           IEnumerable<CelestialObject> cObjects = _context.CelestialObjects.Where(c => c.Name == name);
 
-            if (CelestialObject == null) return NotFound();
-
-            List<CelestialObject> mysat = new List<CelestialObject>();
-
-            foreach (var cObject in _context.CelestialObjects.Where(c => c.OrbitedObjectId == CelestialObject.Id))
+            if (cObjects.Count() == 0) return NotFound();
+            foreach (var item in cObjects)
             {
-                mysat.Add(new CelestialObject() { Id = cObject.Id, Name = cObject.Name });
-                cObject.Satellites = mysat;
-            };
-            CelestialObject.Satellites = mysat;
-            return Ok(CelestialObject);
+                List<CelestialObject> mysat = new List<CelestialObject>();
+
+                foreach (var cObject in _context.CelestialObjects.Where(c => c.OrbitedObjectId == item.Id))
+                {
+                    mysat.Add(new CelestialObject() { Id = cObject.Id, Name = cObject.Name });
+                    cObject.Satellites = mysat;
+                };
+                item.Satellites = mysat;
+
+            }
+
+            return Ok(cObjects);
         }
+
     }
 }
