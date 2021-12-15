@@ -17,6 +17,16 @@ namespace StarChart.Controllers
         public CelestialObjectController(ApplicationDbContext context)
         {
             _context = context;
+            /*
+            if (_context.CelestialObjects.Count() == 0)
+            {
+                _context.CelestialObjects.Add(new CelestialObject() { Id = 1, Name = "sun" });
+                _context.CelestialObjects.Add(new CelestialObject() { Id = 2, Name = "earth", OrbitedObjectId = 1 });
+                _context.CelestialObjects.Add(new CelestialObject() { Id = 3, Name = "mars", OrbitedObjectId = 1 });
+                _context.CelestialObjects.Add(new CelestialObject() { Id = 4, Name = "mercury", OrbitedObjectId = 1 });
+                _context.SaveChanges();
+            }
+            */
         }
 
         [HttpGet("{id:int}")]
@@ -79,6 +89,18 @@ namespace StarChart.Controllers
 
             return Ok(cObjects);
         }
+        [HttpPost]
+        public IActionResult Create([FromBody] CelestialObject cObject)
+        {
+            CelestialObject createdRsource= _context.CelestialObjects.Add(cObject).Entity;
+            _context.SaveChanges();
+            var routeValues = new { id = createdRsource.Id };
+            return CreatedAtRoute(
+                routeName: "GetById",
+                routeValues: routeValues,
+                value: createdRsource);
+        }
 
+      
     }
 }
