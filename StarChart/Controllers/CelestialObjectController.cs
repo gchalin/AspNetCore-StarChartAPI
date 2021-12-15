@@ -101,6 +101,19 @@ namespace StarChart.Controllers
                 value: createdRsource);
         }
 
-      
+        [HttpPut("{id}")]
+      public IActionResult Update(int id, CelestialObject pcObject)
+        {
+            var CelesObject = _context.CelestialObjects.FirstOrDefault(c => c.Id == id);
+            if (CelesObject == null) return NotFound();
+
+            CelesObject.Name = pcObject.Name;
+            CelesObject.OrbitalPeriod = pcObject.OrbitalPeriod;
+            CelesObject.OrbitedObjectId = pcObject.OrbitedObjectId;
+            _context.CelestialObjects.Update(CelesObject);
+            _context.SaveChanges();
+            return NoContent();
+
+        }
     }
 }
