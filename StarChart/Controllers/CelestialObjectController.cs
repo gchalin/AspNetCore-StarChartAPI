@@ -24,6 +24,7 @@ namespace StarChart.Controllers
                 _context.CelestialObjects.Add(new CelestialObject() { Id = 2, Name = "earth", OrbitedObjectId = 1 });
                 _context.CelestialObjects.Add(new CelestialObject() { Id = 3, Name = "mars", OrbitedObjectId = 1 });
                 _context.CelestialObjects.Add(new CelestialObject() { Id = 4, Name = "mercury", OrbitedObjectId = 1 });
+                _context.CelestialObjects.Add(new CelestialObject() { Id = 5, Name = "jupiter", OrbitedObjectId = 1 });
                 _context.SaveChanges();
             }
             */
@@ -125,6 +126,18 @@ namespace StarChart.Controllers
             CelesObject.Name = name;
             _context.CelestialObjects.Update(CelesObject);
             _context.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            
+            IEnumerable<CelestialObject> CelesObjects = _context.CelestialObjects.Where(c => c.Id == id || c.OrbitedObjectId == id);
+            if (CelesObjects.Count() == 0) return NotFound();
+            _context.CelestialObjects.RemoveRange(CelesObjects);
+            _context.SaveChanges();
+
             return NoContent();
 
         }
